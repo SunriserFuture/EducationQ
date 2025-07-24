@@ -1,0 +1,218 @@
+import json
+import os
+from collections import defaultdict
+from typing import Dict, List, Any
+import tiktoken
+from tqdm import tqdm
+import logging
+import yaml
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+from educationq_benchmark_v3_2 import EvalManager, StudentLLM, TeacherLLM, EvaluatorLLM, EvalConfig, CONFIG
+
+def load_config(config_path: str) -> Dict[str, Any]:
+    with open(config_path, 'r') as f:
+        return yaml.safe_load(f)
+
+def count_tokens(text: str) -> int:
+    if not text:
+        return 0
+    encoding = tiktoken.get_encoding("cl100k_base")
+    return len(encoding.encode(text))
+
+def process_results(file_path: str, selected_question_ids: List[int]) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
+    with open(file_path, 'r', encoding='utf-8') as f:
+        results = json.load(f)
+
+    empty_responses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    missing_questions = defaultdict(lambda: defaultdict(list))
+
+    for teacher_name, teacher_data in results.items():
+        for student_name, student_data in teacher_data.items():
+            if student_name == 'config':
+                continue
+            for question_id in selected_question_ids:
+                str_question_id = str(question_id)
+                if str_question_id not in student_data:
+                    missing_questions[teacher_name][student_name].append(str_question_id)
+                    continue
+                
+                question_data = student_data[str_question_id]
+                interaction_history = question_data.get('interaction', [])
+                post_test = question_data.get('post_test', {}).get('responses', [])
+
+                # 检查 interaction 是否有空响应
+                interaction_empty = any(not q.get('question') or not q.get('answer') for q in interaction_history)
+
+                if interaction_empty:
+                    empty_responses[teacher_name][student_name]['rerun_interactions_and_posttest'].append(str_question_id)
+                elif post_test:
+                    tokens = count_tokens(post_test[0].get('model_response', ''))
+                    if tokens == 0:
+                        empty_responses[teacher_name][student_name]['rerun_posttest'].append(str_question_id)
+                    # elif tokens > 1638:
+                    #     empty_responses[teacher_name][student_name]['rerun_interactions_and_posttest'].append(str_question_id)
+                else:
+                    empty_responses[teacher_name][student_name]['rerun_posttest'].append(str_question_id)
+
+    return empty_responses, missing_questions
+
+def print_empty_responses(empty_responses: Dict[str, Dict[str, Dict[str, List[str]]]]):
+    for teacher, students in empty_responses.items():
+        print(f"Teacher: {teacher}")
+        for student, rerun_types in students.items():
+            print(f"  Student: {student}")
+            for rerun_type, questions in rerun_types.items():
+                print(f"    {rerun_type}: {len(questions)}")
+                for question in questions:
+                    print(f"      {question}")
+
+def print_missing_questions(missing_questions: Dict[str, Dict[str, List[str]]]):
+    for teacher, students in missing_questions.items():
+        print(f"Teacher: {teacher}")
+        for student, questions in students.items():
+            print(f"  Student: {student}")
+            print(f"    Missing questions: {len(questions)}")
+            for question in questions:
+                print(f"      {question}")
+
+def select_pairs_to_rerun(empty_responses: Dict[str, Dict[str, Dict[str, List[str]]]]):
+    pairs = []
+    all_pairs = []
+    
+    print("Available teacher-student pairs:")
+    for i, (teacher, students) in enumerate(empty_responses.items(), 1):
+        for j, student in enumerate(students.keys(), 1):
+            pair_index = len(all_pairs) + 1
+            all_pairs.append((teacher, student))
+            print(f"{pair_index}. Teacher: {teacher}, Student: {student}")
+    
+    while True:
+        selection = input("Enter the number of the pair to rerun (or press Enter to finish): ").strip()
+        if not selection:
+            break
+        try:
+            index = int(selection) - 1
+            if 0 <= index < len(all_pairs):
+                pairs.append(all_pairs[index])
+                print(f"Selected: Teacher: {all_pairs[index][0]}, Student: {all_pairs[index][1]}")
+            else:
+                print("Invalid number. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    return pairs
+
+def rerun_interactions_and_posttest(
+    eval_manager: EvalManager,
+    results: Dict[str, Any],
+    pairs_to_rerun: List[tuple],
+    empty_responses: Dict[str, Dict[str, Dict[str, List[str]]]],
+    missing_questions: Dict[str, Dict[str, List[str]]]
+) -> Dict[str, Any]:
+    for teacher_name, student_name in pairs_to_rerun:
+        teacher_config = next(t for t in eval_manager.config.teacher_configs if t['name'] == teacher_name)
+        student_config = next(s for s in eval_manager.config.student_configs if s['name'] == student_name)
+        teacher = TeacherLLM(**teacher_config)
+        student = StudentLLM(**student_config)
+
+        rerun_interactions = empty_responses[teacher_name][student_name]['rerun_interactions_and_posttest']
+        rerun_posttest = empty_responses[teacher_name][student_name]['rerun_posttest']
+
+        for question_id in rerun_interactions:
+            question_data = results[teacher_name][student_name][question_id]
+            category = question_data['category']
+            pre_test_result = question_data['pre_test']['responses']
+            pre_test_score = question_data['pre_test']['scores']
+
+            # 重新运行 interaction
+            interaction_history = eval_manager._process_question(
+                teacher, student, {"category": category, "question_id": question_id},
+                eval_manager.val_data.get(category, eval_manager.val_data.get("general", [])),
+                eval_manager.config.num_interactions, pre_test_result, pre_test_score
+            )['interaction']
+
+            # 更新 interaction 结果
+            results[teacher_name][student_name][question_id]['interaction'] = interaction_history
+
+            # 重新运行 posttest
+            post_test_results = student.take_test(
+                pre_test_result,
+                eval_manager.val_data.get(category, eval_manager.val_data.get("general", [])),
+                interaction_history,
+                pre_test_result
+            )
+            post_test_scores = eval_manager.evaluator.calculate_accuracy(post_test_results)
+
+            # 更新 posttest 结果
+            results[teacher_name][student_name][question_id]['post_test'] = {
+                "responses": post_test_results,
+                "scores": post_test_scores,
+            }
+
+        for question_id in rerun_posttest:
+            question_data = results[teacher_name][student_name][question_id]
+            category = question_data['category']
+            pre_test_result = question_data['pre_test']['responses']
+            interaction_history = question_data['interaction']
+
+            # 只重新运行 posttest
+            post_test_results = student.take_test(
+                pre_test_result,
+                eval_manager.val_data.get(category, eval_manager.val_data.get("general", [])),
+                interaction_history,
+                pre_test_result
+            )
+            post_test_scores = eval_manager.evaluator.calculate_accuracy(post_test_results)
+
+            # 更新 posttest 结果
+            results[teacher_name][student_name][question_id]['post_test'] = {
+                "responses": post_test_results,
+                "scores": post_test_scores,
+            }
+
+    return results
+
+def main():
+    # 设置日志
+    logging.basicConfig(level=logging.INFO)
+
+    # 加载配置
+    config_path = "D:/Workspace/EducationQ_Benchmark/src/data/input/config_teacher0shot_mmlupro_stratified.yaml"
+    config = load_config(config_path)
+    selected_question_ids = config['SELECTED_QUESTION_ID']
+
+    # 初始化EvalManager
+    eval_config = EvalConfig.from_yaml(config_path)
+    eval_manager = EvalManager(eval_config)
+
+    # 处理结果文件
+    results_file = "D:/Workspace/EducationQ_Benchmark/src/data/output/EduQ-Bench_Student-llama31-70b-instruct/MMLU-Pro/data/MMLU-Pro-stratified/Student-llama31-70b-instruct/processed_results/merged_results.json"
+    empty_responses, missing_questions = process_results(results_file, selected_question_ids)
+
+    # 打印空响应统计和缺失问题
+    print_empty_responses(empty_responses)
+    print_missing_questions(missing_questions)
+
+    # 选择要重新运行的师生对
+    pairs_to_rerun = select_pairs_to_rerun(empty_responses)
+
+    if pairs_to_rerun:
+        # 加载原始结果
+        with open(results_file, 'r', encoding='utf-8') as f:
+            results = json.load(f)
+
+        # 重新运行交互和后测试
+        updated_results = rerun_interactions_and_posttest(eval_manager, results, pairs_to_rerun, empty_responses, missing_questions)
+
+        # 保存更新后的结果
+        output_file = "D:/Workspace/EducationQ_Benchmark/src/data/output/EduQ-Bench_Student-llama31-70b-instruct/MMLU-Pro/data/MMLU-Pro-stratified/Student-llama31-70b-instruct/processed_results/merged_results_rerun_interaction_rerun_posttest.json"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(updated_results, f, indent=2, ensure_ascii=False)
+
+        print(f"Updated results saved to {output_file}")
+    else:
+        print("No pairs selected for rerun. Exiting.")
+
+if __name__ == "__main__":
+    main()
