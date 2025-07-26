@@ -165,6 +165,7 @@ cython_debug/
 # API keys and sensitive configuration
 config_*.yaml
 !config_template.yaml
+!config_teacher0shot_*.yaml
 
 # Output files
 src/data/output/*
