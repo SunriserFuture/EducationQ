@@ -16,9 +16,6 @@ GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
 AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
 AGIEVAL_VAL_DATA_FILEPATH: "../dataset/AGIEval/data/few_shot_prompts.csv"
 AGIEVAL_DATASET_NAMES: ["aqua-rat"] #, "sat-math"
-LOGGING_LEVEL: "INFO"
-
-
 LOGGING_LEVEL: "INFO" ## Option: "INFO", "WARNING", "ERROR"
 
 TEACHER_CONFIGS:
