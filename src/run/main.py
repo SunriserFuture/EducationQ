@@ -31,7 +31,7 @@ CONFIG = {
     "API_CALL_INITIAL_DELAY": 10,
     "API_CALL_MAX_DELAY": 320,
     "PARALLEL_TASKS": 5,
-    "CONFIG_YAML_FILEPATH": "D:/Workspace/EducationQ_Benchmark/src/data/input/config_teacher0shot_gpqa_diamond_0928_student_ablation.yaml",
+    "CONFIG_YAML_FILEPATH": "../data/input/config_template.yaml",
 }
 
 # Configuration
@@ -55,10 +55,10 @@ class EvalConfig:
         self.selected_question_ids = config_data.get("SELECTED_QUESTION_ID", [])
         self.first_questions_size = config_data.get("FIRST_QUESTIONS_SIZE")
         self.questions_sample_size = config_data.get("QUESTIONS_SAMPLE_SIZE")
-        self.gpqa_test_data_folder_path = config_data.get("GPQA_TEST_DATA_FOLDER_PATH", "./src/data/dataset/gpqa/dataset/")
-        self.gpqa_val_data_filepath = config_data.get("GPQA_VAL_DATA_FILEPATH", "./src/data/dataset/gpqa/prompts/chain_of_thought_examples.json")
-        self.agieval_test_data_folder_path = config_data.get("AGIEVAL_TEST_DATA_FOLDER_PATH", "D:/Workspace/EducationQ_Benchmark/src/data/dataset/AGIEval/data/v1_1/")
-        self.agieval_val_data_filepath = config_data.get("AGIEVAL_VAL_DATA_FILEPATH", "D:/Workspace/EducationQ_Benchmark/src/data/dataset/AGIEval/data/few_shot_prompts.csv")
+        self.gpqa_test_data_folder_path = config_data.get("GPQA_TEST_DATA_FOLDER_PATH", "../data/dataset/gpqa/dataset/")
+        self.gpqa_val_data_filepath = config_data.get("GPQA_VAL_DATA_FILEPATH", "../data/dataset/gpqa/prompts/chain_of_thought_examples.json")
+        self.agieval_test_data_folder_path = config_data.get("AGIEVAL_TEST_DATA_FOLDER_PATH", "../data/dataset/AGIEval/data/v1_1/")
+        self.agieval_val_data_filepath = config_data.get("AGIEVAL_VAL_DATA_FILEPATH", "../data/dataset/AGIEval/data/few_shot_prompts.csv")
         self.agieval_dataset_names = config_data.get("AGIEVAL_DATASET_NAMES", ["aqua-rat", "sat-math"])
 
         # teachers_setting
@@ -1970,45 +1970,201 @@ class EvalManager:
 
 
 def main():
-    config = EvalConfig.from_yaml(CONFIG["CONFIG_YAML_FILEPATH"])
+    """
+    Main entry point for EducationQ Framework.
+    
+    This function supports multiple execution modes:
+    1. Complete evaluation pipeline (pretest -> interactions -> posttest -> evaluation)
+    2. Load existing results from JSON files for specific stages
+    3. Run specific evaluation types (interaction, teacher_questions, student_responses, comprehensive)
+    
+    Evaluation Types:
+    - Default evaluation (manager._perform_evaluation): 
+      Quantitative analysis of student performance (accuracy, progress)
+      Input: posttest_results (from pipeline)
+      Output: Pre-test vs post-test accuracy comparison by category and overall
+    
+    - Specialized evaluations (require CSV file with teacher pairs):
+      a) Interaction evaluation: Analyzes the entire teacher-student conversation process
+      b) Teacher questions evaluation: Focuses only on teacher-generated questions
+      c) Student responses evaluation: Focuses only on student-generated responses
+      d) Comprehensive evaluation: Combines all three specialized analyses
+      Input: posttest_results_path + csv_path (specifying question_id, teacher_a, teacher_b)
+      Output: Detailed qualitative analysis with scores and explanations
+    
+    Usage examples:
+    - python educationq_framework_v3_3.py  # Run complete pipeline with default evaluation
+    - python educationq_framework_v3_3.py --config custom_config.yaml  # Use custom config
+    - python educationq_framework_v3_3.py --mode load_pretest --input pretest_results.json  # Load pretest results
+    - python educationq_framework_v3_3.py --mode load_interaction --input interaction_results.json  # Load interaction results
+    - python educationq_framework_v3_3.py --mode evaluation --posttest posttest.json --csv evaluation_tasks.csv --eval-type comprehensive  # Run specialized evaluation
+    """
+    import argparse
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description="EducationQ Framework - Multi-Agent Educational Evaluation System",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run complete evaluation pipeline
+  python educationq_framework_v3_3.py
+  
+  # Use custom configuration file
+  python educationq_framework_v3_3.py --config ../data/input/my_config.yaml
+  
+  # Load existing pretest results and continue from interactions
+  python educationq_framework_v3_3.py --mode load_pretest --input pretest_results.json
+  
+  # Load existing interaction results and continue from posttest
+  python educationq_framework_v3_3.py --mode load_interaction --input interaction_results.json
+  
+  # Run specific evaluation on existing posttest results
+  python educationq_framework_v3_3.py --mode evaluation --posttest posttest.json --csv evaluation_tasks.csv --eval-type comprehensive
+        """
+    )
+    
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="../data/input/config_template.yaml",
+        help="Path to the configuration YAML file (default: ../data/input/config_template.yaml)"
+    )
+    
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["complete", "load_pretest", "load_interaction", "evaluation"],
+        default="complete",
+        help="Execution mode: complete pipeline, load pretest results, load interaction results, or run specific evaluation"
+    )
+    
+    parser.add_argument(
+        "--input",
+        type=str,
+        help="Path to input JSON file for load_pretest or load_interaction modes"
+    )
+    
+    parser.add_argument(
+        "--posttest",
+        type=str,
+        help="Path to posttest results JSON file for evaluation mode"
+    )
+    
+    parser.add_argument(
+        "--csv",
+        type=str,
+        help="Path to CSV file containing evaluation tasks for evaluation mode"
+    )
+    
+    parser.add_argument(
+        "--eval-type",
+        type=str,
+        choices=["interaction", "teacher_questions", "student_responses", "comprehensive"],
+        default="comprehensive",
+        help="Type of evaluation to run (default: comprehensive)"
+    )
+    
+    args = parser.parse_args()
+    
+    # Load configuration
+    config = EvalConfig.from_yaml(args.config)
     os.makedirs(config.output_path, exist_ok=True)
     setup_logging(config.logging_level, config.output_path)
+    
+    logging.info(f"EducationQ Framework v{config.experiment_version}")
+    logging.info(f"Configuration file: {args.config}")
+    logging.info(f"Output directory: {config.output_path}")
+    logging.info(f"Execution mode: {args.mode}")
+    
     manager = EvalManager(config)
     
     try:
-        # results = manager.run_complete_eval()
-
-        pretest_results = manager._run_pretest()
-
-        pretest_interaction_results = manager._run_interactions(pretest_results)
-        # pretest_interaction_results = manager._run_interaction_from_json(config.output_path + "GPQA-diamond_Student-llama31-70b-instruct_pretest/GPQA-diamond_Student-llama31-70b-instruct_zero-shot_pretest-results_1.0.0_20240928_162052.json")
-        # pretest_interaction_results = manager._run_interaction_from_json(config.output_path + "GPQA-main_Student-llama31-70b-instruct_pretest/GPQA-diamond_Student-llama31-70b-instruct_zero-shot_pretest-results_1.0.0_20240905_000343.json")
-        # pretest_interaction_results = manager._run_interaction_from_json(config.output_path + "MMLU-Pro-strastified_Student-llama31-70b-instruct_pretest/MMLU-Pro-stratified_Student-llama31-70b-instruct_zero-shot_pretest-results_1.0.0_212612.json")
-        # pretest_interaction_results = manager._run_interaction_from_json(config.output_path + "pretest_results_1.0.0_20241018_170901.json")
-        # pretest_interaction_results = manager._run_interaction_from_json(config.output_path + "MMLU-Pro-stratified_Student-llama31-70b-instruct_pretest/MMLU-Pro-stratified_Student-llama31-70b-instruct_zero-shot_pretest-results_1.0.0_212612.json")
-
-        posttest_results = manager._run_posttest(pretest_interaction_results)
-        # posttest_results = manager._run_posttest_from_json(config.output_path + "GPQA-diamond_13-Teachers_Student-llama31-70b-instruct/13teachers_pretest_interaction_results_1.0.0.json")
-        # posttest_results = manager._run_posttest_from_json(config.output_path + "pretest_interaction_results_1.0.0_20240928_175620.json")
-        # posttest_results = manager._run_posttest_from_json(config.output_path + "pretest_interaction_results_1.0.0_20241007_174145.json")
+        if args.mode == "complete":
+            # ====== Complete Evaluation Pipeline ======
+            logging.info("Starting complete evaluation pipeline...")
+            
+            # Step 1: Pretest
+            logging.info("Step 1/4: Running pretest...")
+            pretest_results = manager._run_pretest()
+            logging.info("Pretest completed successfully.")
+            
+            # Step 2: Teacher-Student Interactions
+            logging.info("Step 2/4: Running teacher-student interactions...")
+            pretest_interaction_results = manager._run_interactions(pretest_results)
+            logging.info("Teacher-student interactions completed successfully.")
+            
+            # Step 3: Posttest
+            logging.info("Step 3/4: Running posttest...")
+            posttest_results = manager._run_posttest(pretest_interaction_results)
+            logging.info("Posttest completed successfully.")
+            
+            # Step 4: Evaluation and Analysis
+            logging.info("Step 4/4: Running evaluation and analysis...")
+            evaluation_results = manager._perform_evaluation(posttest_results)
+            logging.info("Evaluation and analysis completed successfully.")
+            
+            logging.info(f"Complete evaluation pipeline finished successfully for experiment {config.experiment_version}.")
+            
+        elif args.mode == "load_pretest":
+            # ====== Load Pretest Results and Continue ======
+            if not args.input:
+                raise ValueError("--input argument is required for load_pretest mode")
+            
+            logging.info(f"Loading pretest results from: {args.input}")
+            pretest_results = manager._run_interaction_from_json(args.input)
+            
+            logging.info("Running teacher-student interactions...")
+            pretest_interaction_results = manager._run_interactions(pretest_results)
+            
+            logging.info("Running posttest...")
+            posttest_results = manager._run_posttest(pretest_interaction_results)
+            
+            logging.info("Running evaluation and analysis...")
+            evaluation_results = manager._perform_evaluation(posttest_results)
+            
+            logging.info("Pipeline completed successfully from loaded pretest results.")
+            
+        elif args.mode == "load_interaction":
+            # ====== Load Interaction Results and Continue ======
+            if not args.input:
+                raise ValueError("--input argument is required for load_interaction mode")
+            
+            logging.info(f"Loading interaction results from: {args.input}")
+            pretest_interaction_results = manager._run_interaction_from_json(args.input)
+            
+            logging.info("Running posttest...")
+            posttest_results = manager._run_posttest(pretest_interaction_results)
+            
+            logging.info("Running evaluation and analysis...")
+            evaluation_results = manager._perform_evaluation(posttest_results)
+            
+            logging.info("Pipeline completed successfully from loaded interaction results.")
+            
+        elif args.mode == "evaluation":
+            # ====== Run Specific Evaluation on Existing Results ======
+            if not args.posttest or not args.csv:
+                raise ValueError("--posttest and --csv arguments are required for evaluation mode")
+            
+            logging.info(f"Running {args.eval_type} evaluation...")
+            logging.info(f"Posttest results: {args.posttest}")
+            logging.info(f"Evaluation tasks: {args.csv}")
+            
+            if args.eval_type == "interaction":
+                evaluation_results = manager._interaction_evaluation(args.posttest, args.csv)
+            elif args.eval_type == "teacher_questions":
+                evaluation_results = manager._teacher_questions_evaluation(args.posttest, args.csv)
+            elif args.eval_type == "student_responses":
+                evaluation_results = manager._student_responses_evaluation(args.posttest, args.csv)
+            elif args.eval_type == "comprehensive":
+                evaluation_results = manager._comprehensive_evaluation(args.posttest, args.csv)
+            
+            logging.info(f"{args.eval_type.capitalize()} evaluation completed successfully.")
         
-        evaluation_results = manager._perform_evaluation(posttest_results)
-        
-        # posttest_results_path = "D:/Workspace/EducationQ_Benchmark/src/data/output/EduQ-Bench_Student-llama31-70b-instruct/MMLU-Pro/data/MMLU-Pro-stratified/Student-llama31-70b-instruct/processed_results/merged_results_rerun_empty_interaction_posttest_3_rerun_checked_posttest_3.json"
-        # csv_path = "D:/Workspace/EducationQ_Benchmark/src/data/output/EduQ-Bench_Student-llama31-70b-instruct/MMLU-Pro/data/JudgeLLM_list_20241011_2.csv"
-        
-        # evaluation_results = manager._interaction_evaluation(posttest_results_path, csv_path)
-        # evaluation_results = manager._teacher_questions_evaluation(posttest_results_path, csv_path)
-        # evaluation_results = manager._student_responses_evaluation(posttest_results_path, csv_path)
-
-        #evaluation_results = manager._comprehensive_evaluation(posttest_results_path, csv_path)
-
-        logging.info(f"Interaction evaluation completed successfully.")
-        
-        # logging.info(f"Experiment {config.experiment_version} completed successfully.")
+        logging.info(f"Experiment {config.experiment_version} completed successfully.")
         
     except Exception as e:
-        logging.error(f"An error occurred during the experiment: {str(e)}")
+        logging.error(f"An error occurred during the experiment: {str(e)}", exc_info=True)
         raise
 
 if __name__ == "__main__":

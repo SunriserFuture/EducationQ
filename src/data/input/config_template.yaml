@@ -1,82 +1,85 @@
-## "DATASET_TYPE": "gpqa", "mmlu-pro"
-## "DATASET_NAME": "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro"
-
-
-DATASET_TYPE: "mmlu-pro"
-DATASET_NAME: "TIGER-Lab/MMLU-Pro"
-OUTPUT_PATH: "your_output_path"
-EXPERIMENT_VERSION: "1.0.0"
-API_CALL_MAX_RETRIES: 10
-API_CALL_RETRY_DELAY: 5
-PARALLEL_TASKS: 15
-NUM_INTERACTIONS: 5
-NUM_IF_FEW_SHOTS: 5
-SELECTED_CATEGORIES: []
-SELECTED_QUESTION_ID: [10822, 10935, 10944, 10955, 11025]
-FIRST_QUESTIONS_SIZE: null
-QUESTIONS_SAMPLE_SIZE: null
+DATASET_TYPE: "mmlu-pro" ## Option: "gpqa", "mmlu-pro"
+DATASET_NAME: "TIGER-Lab/MMLU-Pro" ## Option: "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro"
+OUTPUT_PATH: "your_output_path" ## Need to be modified to save the records and results
+EXPERIMENT_VERSION: "1.0.0" ## Setup the experiment version number
+API_CALL_MAX_RETRIES: 10  ## Setup the Maximal retry times for each API query
+API_CALL_RETRY_DELAY: 5 ## Setup the initial retry delay second
+PARALLEL_TASKS: 15 ## Setup the number of parallel tasks (interactions)
+NUM_INTERACTIONS: 5 ## Setup the number of interaction rounds of each teacher-student pair of each task
+NUM_IF_FEW_SHOTS: 5 ## Setup the number of few shot examples if the agent's "use_few_shot" is true
+SELECTED_CATEGORIES: [] ## Optional: empty list or list of selected subject names
+SELECTED_QUESTION_ID: [10822, 10935, 10944, 10955, 11025] ## Optional: empty list or list of selected question ids
+FIRST_QUESTIONS_SIZE: null ## Optinal: "null" or "number of the first sampling questions per subject"
+QUESTIONS_SAMPLE_SIZE: null ## Optinal: "null" or "number of the random sampling questions per subject"
+GPQA_TEST_DATA_FOLDER_PATH: "../dataset/gpqa/dataset/"
+GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
+AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
+AGIEVAL_VAL_DATA_FILEPATH: "../dataset/AGIEval/data/few_shot_prompts.csv"
+AGIEVAL_DATASET_NAMES: ["aqua-rat"] #, "sat-math"
 LOGGING_LEVEL: "INFO"
-## "INFO", "WARNING", "ERROR"
+
+
+LOGGING_LEVEL: "INFO" ## Option: "INFO", "WARNING", "ERROR"
 
 TEACHER_CONFIGS:
-  - name: "Teacher1"
-    model: "meta-llama/llama-3.1-70b-instruct"
-    api_key: "your_api_key"
-    base_url: "your_api_url"
-    temperature: 0.0
-    max_tokens: 1024
-    use_few_shot: true
-    recommended_question_token_limit: 150
-    recommended_education_theory: null
-    max_tokens_rerun_threshold_percentage: 0.8
-    question_retries: 3
+  - name: "Teacher1" ## Setup the name of the teacher
+    model: "meta-llama/llama-3.1-70b-instruct" ## Setup the model name based on the model API provider
+    api_key: "your_api_key" ## Setup the API key
+    base_url: "your_api_url" ## Setup the API base url
+    temperature: 0.0 ## Setup the temperature, recommend 0.0
+    max_tokens: 1024 ## Setup the max tokens, recommend 1024
+    use_few_shot: false ## Setup the use of few shot examples, recommend false
+    recommended_question_token_limit: 150 ## Setup the recommended question token limit, recommend 150
+    recommended_education_theory: null ## Setup the recommended education theory, recommend null
+    max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
+    question_retries: 3 ## Setup the question retries if the question is over the recommended max tokens, recommend 3
 
-  - name: "Teacher_gpt4o_mini"
-    model: "openai/gpt-4o-mini"
-    api_key: "your_api_key"
-    base_url: "your_api_url"
-    temperature: 0.0
-    max_tokens: 1024
-    use_few_shot: true
-    recommended_question_token_limit: 150
-    recommended_education_theory: null
-    max_tokens_rerun_threshold_percentage: 0.8
-    question_retries: 5
+  - name: "Teacher_gpt4o_mini" ## Setup the name of the teacher
+    model: "openai/gpt-4o-mini" ## Setup the model name based on the model API provider
+    api_key: "your_api_key" ## Setup the API key
+    base_url: "your_api_url" ## Setup the API base url
+    temperature: 0.0 ## Setup the temperature, recommend 0.0
+    max_tokens: 1024 ## Setup the max tokens, recommend 1024
+    use_few_shot: false ## Setup the use of few shot examples, recommend false
+    recommended_question_token_limit: 150 ## Setup the recommended question token limit, recommend 150
+    recommended_education_theory: null ## Setup the recommended education theory, recommend null
+    max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
+    question_retries: 5 ## Setup the question retries if the question is over the recommended max tokens, recommend 5
 
 STUDENT_CONFIGS:
-  - name: "Student1"
-    model: "meta-llama/llama-3.1-70b-instruct"
-    api_key: "your_api_key"
-    base_url: "your_api_url"
-    temperature: 0.0
-    answer_max_tokens: 1024
-    test_max_tokens: 2048
-    use_few_shot: false
-    include_pretest_info: true
-    recommended_answer_token_limit: 150
-    recommended_test_token_limit: 1024
-    max_tokens_rerun_threshold_percentage: 0.8
-    answer_retries: 3
+  - name: "Student1" ## Setup the name of the student
+    model: "meta-llama/llama-3.1-70b-instruct" ## Setup the model name based on the model API provider
+    api_key: "your_api_key" ## Setup the API key
+    base_url: "your_api_url" ## Setup the API base url
+    temperature: 0.0 ## Setup the temperature, recommend 0.0
+    answer_max_tokens: 1024 ## Setup the answer max tokens, recommend 1024
+    test_max_tokens: 2048 ## Setup the test max tokens, recommend 2048
+    use_few_shot: false ## Setup the use of few shot examples, recommend false
+    include_pretest_info: true ## Setup the include pretest info during the whole process, recommend true
+    recommended_answer_token_limit: 150 ## Setup the recommended answer token limit, recommend 150
+    recommended_test_token_limit: 1024 ## Setup the recommended test token limit, recommend 1024
+    max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
+    answer_retries: 3 ## Setup the answer retries if the answer is over the recommended max tokens, recommend 3
 
-  - name: "Student2"
-    model: "meta-llama/llama-3.1-70b-instruct"
-    api_key: "your_api_key"
-    base_url: "your_api_url"
-    temperature: 0.0
-    answer_max_tokens: 1024
-    test_max_tokens: 2048
-    use_few_shot: false
-    include_pretest_info: true
-    recommended_answer_token_limit: 150
-    recommended_test_token_limit: 1024
-    max_tokens_rerun_threshold_percentage: 0.8
-    answer_retries: 3
+  - name: "Student2" ## Setup the name of the student
+    model: "meta-llama/llama-3.1-70b-instruct" ## Setup the model name based on the model API provider
+    api_key: "your_api_key" ## Setup the API key
+    base_url: "your_api_url" ## Setup the API base url
+    temperature: 0.0 ## Setup the temperature, recommend 0.0
+    answer_max_tokens: 1024 ## Setup the answer max tokens, recommend 1024
+    test_max_tokens: 2048 ## Setup the test max tokens, recommend 2048
+    use_few_shot: false ## Setup the use of few shot examples, recommend false
+    include_pretest_info: true ## Setup the include pretest info during the whole process, recommend true
+    recommended_answer_token_limit: 150 ## Setup the recommended answer token limit, recommend 150
+    recommended_test_token_limit: 1024 ## Setup the recommended test token limit, recommend 1024
+    max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
+    answer_retries: 3 ## Setup the answer retries if the answer is over the recommended max tokens, recommend 3
 
 EVALUATOR_CONFIG:
-  name: "Evaluator"
-  model: "openai/gpt-4o-mini"
-  api_key: "your_openai_api_key"
-  base_url: "your_api_url"
-  temperature: 0.0
-  max_tokens: 4096
-  use_few_shot: false
+  name: "Evaluator" ## Setup the name of the evaluator
+  model: "openai/gpt-4o-mini" ## Setup the model name based on the model API provider
+  api_key: "your_openai_api_key" ## Setup the API key
+  base_url: "your_api_url" ## Setup the API base url
+  temperature: 0.0 ## Setup the temperature, recommend 0.0
+  max_tokens: 4096 ## Setup the max tokens, recommend 4096
+  use_few_shot: false ## Setup the use of few shot examples, recommend false
