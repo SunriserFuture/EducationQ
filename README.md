@@ -36,7 +36,7 @@ This work is based on the research presented in our ACL 2025 paper (2025.acl-lon
 ## Features
 
 - **Multi-Agent Architecture**: Teacher and Student agents powered by different LLMs
-- **Multiple Datasets**: Support for MMLU-Pro, GPQA, and AGIEval datasets
+- **Multiple Datasets**: Support for MMLU-Pro, GPQA, and AGIEval datasets  
 - **Flexible Evaluation**: Both quantitative (accuracy-based) and qualitative (interaction-based) analysis
 - **Resume Capability**: Can continue from any stage using saved results
 - **Comprehensive Analysis**: Multiple evaluation perspectives (interaction, teacher questions, student responses)
@@ -244,28 +244,21 @@ question_id,teacher_a,teacher_b
 python src/run/main.py [OPTIONS]
 ```
 
-Options:
-  --config PATH           Configuration YAML file path
-                          (default: ../data/input/config_template.yaml)
-  
-  --mode MODE            Execution mode:
-                          - complete: Full pipeline (default)
-                          - load_pretest: Load pretest results and continue
-                          - load_interaction: Load interaction results and continue
-                          - evaluation: Run specific evaluation on existing results
-  
-  --input PATH           Input JSON file for load_pretest or load_interaction modes
-  
-  --posttest PATH        Posttest results JSON file for evaluation mode
-  
-  --csv PATH             CSV file with evaluation tasks for evaluation mode
-  
-  --eval-type TYPE       Evaluation type for evaluation mode:
-                          - interaction: Analyze conversation process
-                          - teacher_questions: Analyze teacher questions only
-                          - student_responses: Analyze student responses only
-                          - comprehensive: All three analyses (default)
-```
+**Options**:
+- `--config PATH`: Configuration YAML file path (default: `../data/input/config_template.yaml`)
+- `--mode MODE`: Execution mode:
+  - `complete`: Full pipeline (default)
+  - `load_pretest`: Load pretest results and continue
+  - `load_interaction`: Load interaction results and continue
+  - `evaluation`: Run specific evaluation on existing results
+- `--input PATH`: Input JSON file for `load_pretest` or `load_interaction` modes
+- `--posttest PATH`: Posttest results JSON file for evaluation mode
+- `--csv PATH`: CSV file with evaluation tasks for evaluation mode
+- `--eval-type TYPE`: Evaluation type for evaluation mode:
+  - `interaction`: Analyze conversation process
+  - `teacher_questions`: Analyze teacher questions only
+  - `student_responses`: Analyze student responses only
+  - `comprehensive`: All three analyses (default)
 
 ## Output Files
 
