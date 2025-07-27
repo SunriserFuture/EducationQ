@@ -1,6 +1,6 @@
 DATASET_TYPE: "mmlu-pro" ## Option: "gpqa", "mmlu-pro"
 DATASET_NAME: "TIGER-Lab/MMLU-Pro" ## Option: "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro"
-OUTPUT_PATH: "your_output_path" ## Need to be modified to save the records and results
+OUTPUT_PATH: "../../output/template/" ## Need to be modified to save the records and results
 EXPERIMENT_VERSION: "1.0.0" ## Setup the experiment version number
 API_CALL_MAX_RETRIES: 10  ## Setup the Maximal retry times for each API query
 API_CALL_RETRY_DELAY: 5 ## Setup the initial retry delay second

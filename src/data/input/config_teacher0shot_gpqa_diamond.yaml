@@ -1,6 +1,6 @@
 DATASET_TYPE: "gpqa"
 DATASET_NAME: "gpqa_diamond.csv"
-OUTPUT_PATH: "your_output_path"
+OUTPUT_PATH: "../../output/GPQA-diamond/" ## Need to be modified to save the records and results
 EXPERIMENT_VERSION: "1.0.0"
 NUM_INTERACTIONS: 5
 NUM_IF_FEW_SHOTS: 5
