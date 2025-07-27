@@ -168,8 +168,11 @@ config_*.yaml
 !config_teacher0shot_*.yaml
 
 # Output files
-src/data/output/*
-!src/data/output/.gitkeep
+# src/data/output/*
+# !src/data/output/.gitkeep
+src/data/output/*.log
+src/data/output/*.tmp
+src/data/output/*.temp
 
 # Log files
 *.log
@@ -190,8 +193,8 @@ Thumbs.db
 *~
 
 # Large data files
-*.csv
-*.json
-*.jsonl
+# *.csv
+# *.json
+# *.jsonl
 !example_*.csv
 !example_*.json 
