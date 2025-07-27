@@ -15,8 +15,6 @@ AGIEVAL_VAL_DATA_FILEPATH: "../dataset/AGIEval/data/few_shot_prompts.csv"
 AGIEVAL_DATASET_NAMES: ["aqua-rat"] #, "sat-math"
 LOGGING_LEVEL: "INFO"
 
-# "meta-llama/llama-3.1-70b-instruct", "qwen/qwen-2.5-72b-instruct"
-
 TEACHER_CONFIGS:
   - name: "Teacher-qwen25-72b-instruct"
     model: "Qwen/Qwen2.5-72B-Instruct"
