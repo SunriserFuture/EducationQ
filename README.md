@@ -86,7 +86,7 @@ The framework operates through three phases:
 ## 📁 Datasets
 
 <p align="center">
-  <img src="docs/figures/mmlu-pro-vs-mmlu-pro-stratified.png" alt="MMLU-Pro vs MMLU-Pro Stratified" width="800"/>
+  <img src="docs/figures/mmlu-pro-vs-mmlu-pro-stratifited.png" alt="MMLU-Pro vs MMLU-Pro Stratified" width="800"/>
 </p>
 
 EducationQ supports multiple benchmark datasets and user-defined datasets:
@@ -100,7 +100,7 @@ EducationQ supports multiple benchmark datasets and user-defined datasets:
 And we construct **a high-quality and balanced teaching-oriented testbed** for LLMs' teaching capabilities evaluation.
 
 <p align="center">
-  <img src="docs/figures/dataset-distribution.png" alt="Dataset Distribution" width="800"/>
+  <img src="docs/figures/dataset-distribution.png" alt="Dataset Distribution" width="300"/>
 </p>
 
 1,498 Teaching Tasks covers 13 different disciplines and a wide range of difficulty levels: Meticulously curated from two elite benchmark data sources.
