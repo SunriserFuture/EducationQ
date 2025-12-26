@@ -1,10 +1,23 @@
 # EducationQ Framework
 
 <p align="center">
-  <img src="docs/figures/dynamic-educational-scenario-2.png" alt="EducationQ Multi-Agent Framework" width="800"/>
+  <img src="docs/figures/interaction-process.png" alt="Interaction Process" width="800"/>
 </p>
 
-**EducationQ** is a comprehensive multi-agent educational evaluation framework for assessing LLMs' teaching capabilities through simulated dynamic educational scenarios. Unlike traditional single-turn evaluations that focus on knowledge recall, EducationQ evaluates the comprehensive pedagogical effectiveness of LLMs through multi-turn teacher-student interactions.
+**EducationQ Framework** is a comprehensive multi-agent educational framework that transforms and evaluates LLMs' teaching capabilities through simulated dynamic educational scenarios. Grounded in pedagogical theories (Zone of Proximal Development, Scaffolding, Informal Formative Assessment, Bloom's Taxonomy), EducationQ enables LLMs to consolidate their foundational abilities—knowledge retrieval, generation, and reasoning—into comprehensive teaching effectiveness.
+
+## 📊 EducationQ Benchmark
+
+<p align="center">
+  <img src="docs/figures/results-1.png" alt="Overall Results" width="800"/>
+</p>
+
+**EducationQ Benchmark** is a quantitative and qualitative mixed-method evaluation of LLMs' teaching capabilities based on the EducationQ Framework. 
+Constructing research of 14 LLMs across major AI Organizations(OpenAI, Meta, Google, Anthropic, etc.) through mixed-methods approach, we **observe LLMs' distinct teaching behaviors & strategies** and **benchmark capabilities via student learning gains**, revealing the need for pedagogical optimization beyond knowledge scaling.
+
+<p align="center">
+  <img src="docs/figures/results-2.png" alt="Per-Subject Results" width="800"/>
+</p>
 
 ## 🎯 Key Insights
 
@@ -40,22 +53,19 @@ If you use this framework in your research, please cite our ACL 2025 paper:
 }
 ```
 
-## 🔬 Framework Overview
+## 📚 Interdisciplinary Grounding
 
-### Why EducationQ?
+EducationQ is grounded in established educational theories:
 
-Traditional LLM evaluations focus on single-turn tasks like answering, reasoning, or coding. Educational agent evaluations typically assess isolated capabilities (student assessment, content generation, question answering). **EducationQ** introduces a novel paradigm:
+1. **Zone of Proximal Development (ZPD)** *(Vygotsky, 1978)* — Defines the ideal learning space where effective teaching must occur
+2. **Scaffolding** *(Wood, Bruner, & Ross, 1976)* — Providing temporary, adaptive support—giving hints, not answers
+3. **Strategic Questioning & Bloom's Taxonomy** *(Bloom, 1956)* — Provides a measurable framework to assess teaching quality
+4. **Informal Formative Assessment (IFA)** *(Ruiz-Primo & Furtak, 2007)* — The engine that drives dynamic, personalized teaching
 
-| Approach | Task Type | Capabilities Evaluated |
-|----------|-----------|----------------------|
-| (a) General LLM Evaluation | Single-Turn | Answering, Reasoning, Coding |
-| (b) Educational Agent Evaluation | Single-Turn | Student Assessment, Content Generation, Q&A |
-| **(c) EducationQ** | **Multi-Agent Multi-Turn** | **Comprehensive Teaching: Assessing, Questioning, Teaching, Adapting** |
-
-### Multi-Agent Architecture
+## 🔬 Multi-Agent Framework
 
 <p align="center">
-  <img src="docs/figures/interaction-process.png" alt="Interaction Process" width="800"/>
+  <img src="docs/figures/dynamic-educational-scenario-2.png" alt="Dynamic Educational Scenario" width="800"/>
 </p>
 
 EducationQ employs three specialized agents:
@@ -113,32 +123,6 @@ EducationQ provides both **quantitative** and **qualitative** evaluation:
 4. Response Diversity
 5. Elaboration Progression
 6. Metacognitive Reflection
-
-## 📈 Results
-
-### Overall Teaching Effectiveness
-
-<p align="center">
-  <img src="docs/figures/results-1.png" alt="Overall Results" width="800"/>
-</p>
-
-We evaluated 14 LLMs from major AI organizations (OpenAI, Meta, Google, Anthropic, Cohere, Mistral, Microsoft, etc.) on **1,498 questions** spanning **13 disciplines** and **10 difficulty levels**.
-
-**Key Findings:**
-- **Llama 3.1 70B Instruct** achieves the highest overall learning gain (11.01%)
-- **Gemini 1.5 Pro 002** shows exceptional performance on GPQA-Diamond (7.58% ALG)
-- Teaching effectiveness varies significantly across model families and sizes
-
-### Per-Subject Performance
-
-<p align="center">
-  <img src="docs/figures/results-2.png" alt="Per-Subject Results" width="800"/>
-</p>
-
-The radar chart shows learning gains across 13 academic subjects:
-- Business, Law, Psychology, Biology, Chemistry, History, Health, Economics, Math, Physics, Computer Science, Philosophy, Engineering
-
-Different models excel in different domains, highlighting the importance of specialized pedagogical optimization.
 
 ## ✨ Features
 
@@ -324,21 +308,6 @@ EducationQ_Framework/
 ├── README.md
 └── requirements.txt
 ```
-
-## 🤖 Supported Models
-
-The framework supports various LLM providers:
-
-| Provider | Example Models |
-|----------|---------------|
-| **OpenAI** | GPT-4, GPT-4o, GPT-4o-mini, o1-mini |
-| **Meta** | Llama 3.1 (8B, 70B, 405B Instruct) |
-| **Google** | Gemini 1.5 Pro/Flash |
-| **Anthropic** | Claude 3.5 Sonnet |
-| **Cohere** | Command R |
-| **Mistral** | Mistral Nemo |
-| **Microsoft** | WizardLM-2, Phi-3.5 |
-| **Others** | Any OpenAI-compatible API |
 
 ## 🤝 Contributing
 
