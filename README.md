@@ -13,6 +13,7 @@
 </p>
 
 **EducationQ Benchmark** is a quantitative and qualitative mixed-method evaluation of LLMs' teaching capabilities based on the EducationQ Framework. 
+
 Constructing research of 14 LLMs across major AI Organizations(OpenAI, Meta, Google, Anthropic, etc.) through mixed-methods approach, we **observe LLMs' distinct teaching behaviors & strategies** and **benchmark capabilities via student learning gains**, revealing the need for pedagogical optimization beyond knowledge scaling.
 
 <p align="center">
