@@ -57,6 +57,7 @@ class EvalConfig:
         self.questions_sample_size = config_data.get("QUESTIONS_SAMPLE_SIZE")
         self.gpqa_test_data_folder_path = config_data.get("GPQA_TEST_DATA_FOLDER_PATH", "../data/dataset/gpqa/dataset/")
         self.gpqa_val_data_filepath = config_data.get("GPQA_VAL_DATA_FILEPATH", "../data/dataset/gpqa/prompts/chain_of_thought_examples.json")
+        self.mmlu_pro_test_data_filepath = config_data.get("MMLU_PRO_TEST_DATA_FILEPATH", "../data/dataset/mmlu-pro/mmlu_pro_full_dataset.json")
         self.agieval_test_data_folder_path = config_data.get("AGIEVAL_TEST_DATA_FOLDER_PATH", "../data/dataset/AGIEval/data/v1_1/")
         self.agieval_val_data_filepath = config_data.get("AGIEVAL_VAL_DATA_FILEPATH", "../data/dataset/AGIEval/data/few_shot_prompts.csv")
         self.agieval_dataset_names = config_data.get("AGIEVAL_DATASET_NAMES", ["aqua-rat", "sat-math"])
@@ -1116,7 +1117,26 @@ class BaseDataset:
 
 class MMLU_PRO(BaseDataset):
     @classmethod
-    def load_data(cls, dataset_name: str = "TIGER-Lab/MMLU-Pro"):
+    def load_data(cls, dataset_name: str = "TIGER-Lab/MMLU-Pro", test_data_filepath: str = None):
+        # If dataset_name is a local path or filename ending in .json, prioritize it
+        if dataset_name.endswith(".json"):
+            # Try to find the file in the common dataset directory if it is not an absolute path
+            if not os.path.isabs(dataset_name):
+                potential_path = os.path.join(os.path.dirname(test_data_filepath) if test_data_filepath else "../data/dataset/mmlu-pro/", dataset_name)
+                if os.path.exists(potential_path):
+                    test_data_filepath = potential_path
+            elif os.path.exists(dataset_name):
+                test_data_filepath = dataset_name
+
+        if test_data_filepath and os.path.exists(test_data_filepath):
+            logging.info(f"Loading MMLU-PRO data from local file: {test_data_filepath}")
+            with open(test_data_filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            test_df = cls.preprocess_data(data)
+            val_df = {} # Local file might not have validation split in the same format
+            return test_df, val_df
+        
+        logging.info(f"Loading MMLU-PRO data from HuggingFace: {dataset_name}")
         dataset = load_dataset(dataset_name)
         test_df, val_df = dataset["test"], dataset["validation"]
         test_df = cls.preprocess_data(test_df)
@@ -1367,7 +1387,10 @@ class EvalManager:
     def _load_datasets(self):
         if self.config.dataset_type == "mmlu-pro":
             try:
-                test_data, val_data = MMLU_PRO.load_data(self.config.dataset_name)
+                test_data, val_data = MMLU_PRO.load_data(
+                    self.config.dataset_name, 
+                    self.config.mmlu_pro_test_data_filepath
+                )
                 filtered_test_data = MMLU_PRO.filter_data(
                 test_data,
                 self.config.selected_question_ids,

@@ -1,5 +1,5 @@
 DATASET_TYPE: "mmlu-pro" ## Option: "gpqa", "mmlu-pro"
-DATASET_NAME: "TIGER-Lab/MMLU-Pro" ## Option: "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro"
+DATASET_NAME: "TIGER-Lab/MMLU-Pro" ## Option: "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro", "mmlu_pro_stratified.json"
 OUTPUT_PATH: "../../output/template/" ## Need to be modified to save the records and results
 EXPERIMENT_VERSION: "1.0.0" ## Setup the experiment version number
 API_CALL_MAX_RETRIES: 10  ## Setup the Maximal retry times for each API query
@@ -11,9 +11,10 @@ SELECTED_CATEGORIES: [] ## Optional: empty list or list of selected subject name
 SELECTED_QUESTION_ID: [10822, 10935, 10944, 10955, 11025] ## Optional: empty list or list of selected question ids
 FIRST_QUESTIONS_SIZE: null ## Optinal: "null" or "number of the first sampling questions per subject"
 QUESTIONS_SAMPLE_SIZE: null ## Optinal: "null" or "number of the random sampling questions per subject"
-GPQA_TEST_DATA_FOLDER_PATH: "../dataset/gpqa/dataset/"
-GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
-AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
+    GPQA_TEST_DATA_FOLDER_PATH: "../dataset/gpqa/dataset/"
+    GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
+    MMLU_PRO_TEST_DATA_FILEPATH: "../dataset/mmlu-pro/mmlu_pro_full_dataset.json"
+    AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
 AGIEVAL_VAL_DATA_FILEPATH: "../dataset/AGIEval/data/few_shot_prompts.csv"
 AGIEVAL_DATASET_NAMES: ["aqua-rat"] #, "sat-math"
 LOGGING_LEVEL: "INFO" ## Option: "INFO", "WARNING", "ERROR"
