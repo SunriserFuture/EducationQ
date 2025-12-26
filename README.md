@@ -1,10 +1,22 @@
 # EducationQ Framework
 
-A comprehensive multi-agent educational evaluation system for assessing teaching effectiveness through AI-powered teacher-student interactions.
+<p align="center">
+  <img src="docs/figures/dynamic-educational-scenario-2.png" alt="EducationQ Multi-Agent Framework" width="800"/>
+</p>
 
-## Citation
+**EducationQ** is a comprehensive multi-agent educational evaluation framework for assessing LLMs' teaching capabilities through simulated dynamic educational scenarios. Unlike traditional single-turn evaluations that focus on knowledge recall, EducationQ evaluates the comprehensive pedagogical effectiveness of LLMs through multi-turn teacher-student interactions.
 
-If you use this framework in your research, please cite our paper:
+## 🎯 Key Insights
+
+Our research reveals several important findings:
+
+- **Teaching effectiveness does not correlate linearly with model scale or general reasoning capabilities** - some smaller open-source models outperform larger commercial counterparts in teaching contexts
+- **78% agreement** between human expert evaluations and our automated qualitative analysis of effective teaching behaviors
+- **LLMs-as-Teachers require specialized optimization** beyond simple scaling, suggesting next-generation educational AI should prioritize targeted enhancement of specific pedagogical effectiveness
+
+## 📖 Citation
+
+If you use this framework in your research, please cite our ACL 2025 paper:
 
 ```bibtex
 @inproceedings{shi-etal-2025-educationq,
@@ -25,25 +37,119 @@ If you use this framework in your research, please cite our paper:
     doi = "10.18653/v1/2025.acl-long.1576",
     pages = "32799--32828",
     ISBN = "979-8-89176-251-0",
-    abstract = "Large Language Models (LLMs) increasingly serve as educational tools, yet evaluating their teaching capabilities remains challenging due to the resource-intensive, context-dependent, and methodologically complex nature of teacher-student interactions. We introduce EducationQ, a multi-agent dialogue framework that efficiently assesses teaching capabilities through simulated dynamic educational scenarios, featuring specialized agents for teaching, learning, and evaluation. Testing 14 LLMs across major AI Organizations (OpenAI, Meta, Google, Anthropic, and others) on 1,498 questions spanning 13 disciplines and 10 difficulty levels reveals that teaching effectiveness does not correlate linearly with model scale or general reasoning capabilities - with some smaller open-source models outperforming larger commercial counterparts in teaching contexts. This finding highlights a critical gap in current evaluations that prioritize knowledge recall over interactive pedagogy. Our mixed-methods evaluation, combining quantitative metrics with qualitative analysis and expert case studies, identifies distinct pedagogical strengths employed by top-performing models (e.g., sophisticated questioning strategies, adaptive feedback mechanisms). Human expert evaluations show 78{\%} agreement with our automated qualitative analysis of effective teaching behaviors, validating our methodology. EducationQ demonstrates that LLMs-as-Teachers require specialized optimization beyond simple scaling, suggesting next-generation educational AI prioritize targeted enhancement of specific pedagogical effectiveness."
 }
 ```
 
-## Overview
+## 🔬 Framework Overview
 
-EducationQ Framework is designed to evaluate the effectiveness of different teaching approaches by simulating teacher-student interactions using large language models. The framework supports multiple datasets (MMLU-Pro, GPQA, AGIEval) and provides both quantitative and qualitative analysis of teaching performance.
+### Why EducationQ?
 
-This work is based on the research presented in our ACL 2025 paper (2025.acl-long.1576.pdf), which introduces a novel multi-agent framework for evaluating large language models' teaching capabilities through simulated educational interactions.
+Traditional LLM evaluations focus on single-turn tasks like answering, reasoning, or coding. Educational agent evaluations typically assess isolated capabilities (student assessment, content generation, question answering). **EducationQ** introduces a novel paradigm:
 
-## Features
+| Approach | Task Type | Capabilities Evaluated |
+|----------|-----------|----------------------|
+| (a) General LLM Evaluation | Single-Turn | Answering, Reasoning, Coding |
+| (b) Educational Agent Evaluation | Single-Turn | Student Assessment, Content Generation, Q&A |
+| **(c) EducationQ** | **Multi-Agent Multi-Turn** | **Comprehensive Teaching: Assessing, Questioning, Teaching, Adapting** |
+
+### Multi-Agent Architecture
+
+<p align="center">
+  <img src="docs/figures/interaction-process.png" alt="Interaction Process" width="800"/>
+</p>
+
+EducationQ employs three specialized agents:
+
+- **Student Agent**: Takes tests, reflects on feedback and questions, answers with understanding
+- **Teacher Agent**: Evaluates responses, adjusts strategy, provides feedback, teaches by questioning
+- **Evaluator Agent**: Calculates accuracy, verifies compliance, analyzes effectiveness, measures learning gains
+
+### Evaluation Pipeline
+
+The framework operates through three phases:
+
+1. **Pre-Test**: Student takes initial test; Evaluator calculates baseline accuracy
+2. **Interaction**: Multi-turn dialogue where Teacher guides Student through questioning and feedback
+3. **Post-Test**: Student retakes test; Evaluator measures learning gains
+
+## 📊 Evaluation Metrics
+
+<p align="center">
+  <img src="docs/figures/evaluating-metrics.png" alt="Evaluation Metrics" width="800"/>
+</p>
+
+EducationQ provides both **quantitative** and **qualitative** evaluation:
+
+### Quantitative Metrics
+
+| Metric | Description | Formula |
+|--------|-------------|---------|
+| **ALG** (Absolute Learning Gain) | Direct improvement in student performance | ACC_post - ACC_pre |
+| **PNIR** (Positive-Negative Impact Ratio) | Consistency of teaching effectiveness | N_neg / N_pos |
+| **CSS** (Cross-Subject Stability) | Standard deviation of learning gains across subjects | σ(SLGPD) |
+| **UIC** (Unique Improvement Count) | Questions where only one specific teacher model achieved improvement | Count(OUI) |
+
+### Qualitative Analysis Dimensions
+
+**Holistic Interaction Analysis:**
+1. Assessment Effectiveness
+2. Questioning Effectiveness
+3. Feedback Effectiveness
+4. Instructional Adaptation Effectiveness
+5. Learning Objective Achievement Effectiveness
+
+**Teacher-Centric Question Analysis:**
+1. Question Relevance
+2. Cognitive Level
+3. Knowledge Dimension
+4. Question Diversity
+5. Scaffolding Progression
+6. Metacognitive Promotion
+
+**Student-Centric Response Analysis:**
+1. Response Relevance
+2. Cognitive Level Demonstration
+3. Knowledge Dimension Integration
+4. Response Diversity
+5. Elaboration Progression
+6. Metacognitive Reflection
+
+## 📈 Results
+
+### Overall Teaching Effectiveness
+
+<p align="center">
+  <img src="docs/figures/results-1.png" alt="Overall Results" width="800"/>
+</p>
+
+We evaluated 14 LLMs from major AI organizations (OpenAI, Meta, Google, Anthropic, Cohere, Mistral, Microsoft, etc.) on **1,498 questions** spanning **13 disciplines** and **10 difficulty levels**.
+
+**Key Findings:**
+- **Llama 3.1 70B Instruct** achieves the highest overall learning gain (11.01%)
+- **Gemini 1.5 Pro 002** shows exceptional performance on GPQA-Diamond (7.58% ALG)
+- Teaching effectiveness varies significantly across model families and sizes
+
+### Per-Subject Performance
+
+<p align="center">
+  <img src="docs/figures/results-2.png" alt="Per-Subject Results" width="800"/>
+</p>
+
+The radar chart shows learning gains across 13 academic subjects:
+- Business, Law, Psychology, Biology, Chemistry, History, Health, Economics, Math, Physics, Computer Science, Philosophy, Engineering
+
+Different models excel in different domains, highlighting the importance of specialized pedagogical optimization.
+
+## ✨ Features
 
 - **Multi-Agent Architecture**: Teacher and Student agents powered by different LLMs
 - **Multiple Datasets**: Support for MMLU-Pro, GPQA, and AGIEval datasets  
 - **Flexible Evaluation**: Both quantitative (accuracy-based) and qualitative (interaction-based) analysis
 - **Resume Capability**: Can continue from any stage using saved results
 - **Comprehensive Analysis**: Multiple evaluation perspectives (interaction, teacher questions, student responses)
+- **Local Dataset Support**: Load datasets from local JSON files without network dependency
 
-## Installation
+## 🚀 Installation
 
 ```bash
 # Clone the repository
@@ -54,7 +160,7 @@ cd EducationQ/EducationQ_Framework
 pip install -r requirements.txt
 ```
 
-## Quick Start
+## 📋 Quick Start
 
 ### 1. Basic Usage
 
@@ -94,7 +200,7 @@ Run comprehensive evaluation on existing results:
 python src/run/main.py --mode evaluation --posttest posttest.json --csv evaluation_tasks.csv --eval-type comprehensive
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 The framework uses YAML configuration files. See `src/data/input/config_template.yaml` for a complete example.
 
@@ -103,7 +209,7 @@ The framework uses YAML configuration files. See `src/data/input/config_template
 #### Dataset Configuration
 ```yaml
 DATASET_TYPE: "mmlu-pro"  # Options: "gpqa", "mmlu-pro", "agieval"
-DATASET_NAME: "TIGER-Lab/MMLU-Pro"
+DATASET_NAME: "TIGER-Lab/MMLU-Pro"  # Or local file: "mmlu_pro_stratified.json"
 SELECTED_CATEGORIES: []  # Empty for all categories
 SELECTED_QUESTION_ID: []  # Empty for all questions
 ```
@@ -145,102 +251,21 @@ EVALUATOR_CONFIG:
   max_tokens: 4096
 ```
 
-## Evaluation Types
+## 📁 Datasets
 
-### 1. Default Evaluation (Quantitative)
+EducationQ supports three benchmark datasets:
 
-**Function**: `manager._perform_evaluation(posttest_results)`
+| Dataset | Questions | Domains | Description |
+|---------|-----------|---------|-------------|
+| **MMLU-Pro** | 12,032 | 14 subjects | Enhanced MMLU with 10 options per question |
+| **GPQA** | 198-546 | Science | Graduate-level science questions |
+| **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
 
-**Purpose**: Quantitative analysis of student performance improvement
+Pre-filtered stratified subsets are available:
+- `mmlu_pro_stratified.json`: 1,300 stratified questions from MMLU-Pro
+- `gpqa_diamond.csv`: Diamond subset of GPQA
 
-**Input**: Posttest results from the pipeline
-
-**Output**: 
-- Pre-test vs post-test accuracy comparison
-- Progress metrics by category and overall
-- Student and teacher configuration details
-
-**Example Output**:
-```json
-{
-  "Teacher1": {
-    "Student1": {
-      "overall": {
-        "pre_test_accuracy": 0.65,
-        "post_test_accuracy": 0.78,
-        "progress": 0.13
-      },
-      "category_name": {
-        "pre_test_accuracy": 0.60,
-        "post_test_accuracy": 0.75,
-        "progress": 0.15
-      }
-    }
-  }
-}
-```
-
-### 2. Specialized Evaluations (Qualitative)
-
-These evaluations require a CSV file specifying which teacher pairs to compare for which questions.
-
-**CSV Format**:
-```csv
-question_id,teacher_a,teacher_b
-10822,Teacher1,Teacher2
-10935,Teacher1,Teacher3
-```
-
-#### a) Interaction Evaluation
-
-**Function**: `manager._interaction_evaluation(posttest_results_path, csv_path)`
-
-**Purpose**: Analyzes the entire teacher-student conversation process
-
-**Evaluation Dimensions**:
-- Assessment Effectiveness
-- Questioning Effectiveness  
-- Feedback Effectiveness
-- Instructional Adaptation Effectiveness
-- Learning Objective Achievement Effectiveness
-
-#### b) Teacher Questions Evaluation
-
-**Function**: `manager._teacher_questions_evaluation(posttest_results_path, csv_path)`
-
-**Purpose**: Focuses only on teacher-generated questions
-
-**Evaluation Dimensions**:
-- Question Relevance
-- Cognitive Level
-- Knowledge Dimension
-- Question Diversity
-- Scaffolding Progression
-- Metacognitive Promotion
-
-#### c) Student Responses Evaluation
-
-**Function**: `manager._student_responses_evaluation(posttest_results_path, csv_path)`
-
-**Purpose**: Focuses only on student-generated responses
-
-**Evaluation Dimensions**:
-- Response Relevance
-- Cognitive Level Demonstration
-- Knowledge Dimension Integration
-- Response Diversity
-- Elaboration Progression
-- Metacognitive Reflection
-
-#### d) Comprehensive Evaluation
-
-**Function**: `manager._comprehensive_evaluation(posttest_results_path, csv_path)`
-
-**Purpose**: Combines all three specialized analyses
-
-**Output**: All three evaluation types combined in one result
-
-## Command Line Options
+## 🖥️ Command Line Options
 
 ```bash
 python src/run/main.py [OPTIONS]
@@ -262,7 +287,7 @@ python src/run/main.py [OPTIONS]
   - `student_responses`: Analyze student responses only
   - `comprehensive`: All three analyses (default)
 
-## Output Files
+## 📤 Output Files
 
 The framework generates several types of output files:
 
@@ -276,35 +301,46 @@ The framework generates several types of output files:
    - `student_responses_evaluation_results_{version}_{timestamp}.json`
    - `comprehensive_evaluation_results_{version}_{timestamp}.json`
 
-## Directory Structure
+## 📂 Directory Structure
 
 ```
 EducationQ_Framework/
+├── docs/
+│   ├── figures/                    # Framework diagrams and result visualizations
+│   └── 2025.acl-long.1576.pdf     # ACL 2025 paper
 ├── src/
 │   ├── data/
-│   │   ├── input/
-│   │   │   └── config_template.yaml
-│   │   ├── dataset/
-│   │   │   ├── gpqa/
-│   │   │   ├── AGIEval/
-│   │   │   └── mmlu-pro/
-│   │   └── output/
+│   │   ├── input/                  # Configuration files
+│   │   │   ├── config_template.yaml
+│   │   │   ├── config_teacher0shot_gpqa_diamond.yaml
+│   │   │   └── config_teacher0shot_mmlupro_stratified.yaml
+│   │   ├── dataset/                # Dataset files
+│   │   │   ├── gpqa/              # GPQA dataset
+│   │   │   ├── AGIEval/           # AGIEval dataset
+│   │   │   └── mmlu-pro/          # MMLU-Pro dataset
+│   │   └── output/                 # Experiment results
 │   └── run/
-│       └── main.py
+│       └── main.py                 # Main entry point
 ├── README.md
 └── requirements.txt
 ```
 
-## Supported Models
+## 🤖 Supported Models
 
 The framework supports various LLM providers:
 
-- **OpenAI**: GPT-4, GPT-4o-mini, etc.
-- **Meta**: Llama models
-- **Google**: Vertex AI models
-- **Custom APIs**: Any OpenAI-compatible API
+| Provider | Example Models |
+|----------|---------------|
+| **OpenAI** | GPT-4, GPT-4o, GPT-4o-mini, o1-mini |
+| **Meta** | Llama 3.1 (8B, 70B, 405B Instruct) |
+| **Google** | Gemini 1.5 Pro/Flash |
+| **Anthropic** | Claude 3.5 Sonnet |
+| **Cohere** | Command R |
+| **Mistral** | Mistral Nemo |
+| **Microsoft** | WizardLM-2, Phi-3.5 |
+| **Others** | Any OpenAI-compatible API |
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -312,10 +348,19 @@ The framework supports various LLM providers:
 4. Add tests if applicable
 5. Submit a pull request
 
-## License
+See [docs/contributing.md](docs/contributing.md) for detailed guidelines.
+
+## 📄 License
 
 MIT License
 
-## Contact
+## 📧 Contact
 
-For questions and support, please contact: educationq@sunriser.org 
+For questions and support, please contact: educationq@sunriser.org
+
+---
+
+<p align="center">
+  <b>EducationQ: Evaluating LLMs' Teaching Capabilities Through Multi-Agent Dialogue Framework</b><br>
+  ACL 2025 | <a href="https://aclanthology.org/2025.acl-long.1576/">Paper</a> | <a href="https://github.com/SunriserFuture/EducationQ">Code</a>
+</p>
