@@ -11,7 +11,7 @@ openai>=1.0.0
 tiktoken>=0.5.0
 
 # Configuration and data formats
-PyYAML>=6.0
+PyYAML>=6.0.3
 pydantic>=2.0.0
 
 # Progress bars and utilities
@@ -19,7 +19,7 @@ tqdm>=4.64.0
 
 # Google Cloud authentication (for Vertex AI)
 google-auth>=2.0.0
-# google-auth-transport-requests>=0.1.0
+google-auth-transport-requests>=0.1.0
 
 # Optional: For better performance with large datasets
 # pandas[performance]>=1.5.0
