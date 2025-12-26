@@ -83,6 +83,36 @@ The framework operates through three phases:
 2. **Interaction**: Multi-turn dialogue where Teacher guides Student through questioning and feedback
 3. **Post-Test**: Student retakes test; Evaluator measures learning gains
 
+## 📁 Datasets
+
+<p align="center">
+  <img src="docs/figures/mmlu-pro-vs-mmlu-pro-stratified.png" alt="MMLU-Pro vs MMLU-Pro Stratified" width="800"/>
+</p>
+
+EducationQ supports multiple benchmark datasets and user-defined datasets:
+
+| Dataset | Questions | Domains | Description |
+|---------|-----------|---------|-------------|
+| **MMLU-Pro** | 12,032 | 14 subjects | Enhanced MMLU with 10 options per question |
+| **GPQA** | 198-546 | Science | Graduate-level science questions |
+| **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
+
+And we construct **a high-quality and balanced teaching-oriented testbed** for LLMs' teaching capabilities evaluation.
+
+<p align="center">
+  <img src="docs/figures/dataset-distribution.png" alt="Dataset Distribution" width="800"/>
+</p>
+
+1,498 Teaching Tasks covers 13 different disciplines and a wide range of difficulty levels: Meticulously curated from two elite benchmark data sources.
+
+Pre-filtered stratified subsets are available:
+- `mmlu_pro_stratified.json`: 1,300 stratified questions from MMLU-Pro
+- `gpqa_diamond.csv`: Diamond subset of GPQA
+
+
+Our Goal: To construct a robust evaluation dataset that moves beyond simple knowledge recall to assess deep and  pedagogical interaction, isolating and measuring genuine pedagogical skills.
+
+
 ## 📊 Evaluation Metrics
 
 <p align="center">
@@ -235,20 +265,6 @@ EVALUATOR_CONFIG:
   temperature: 0.0
   max_tokens: 4096
 ```
-
-## 📁 Datasets
-
-EducationQ supports three benchmark datasets:
-
-| Dataset | Questions | Domains | Description |
-|---------|-----------|---------|-------------|
-| **MMLU-Pro** | 12,032 | 14 subjects | Enhanced MMLU with 10 options per question |
-| **GPQA** | 198-546 | Science | Graduate-level science questions |
-| **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
-
-Pre-filtered stratified subsets are available:
-- `mmlu_pro_stratified.json`: 1,300 stratified questions from MMLU-Pro
-- `gpqa_diamond.csv`: Diamond subset of GPQA
 
 ## 🖥️ Command Line Options
 
