@@ -110,7 +110,7 @@ Pre-filtered stratified subsets are available:
 - `gpqa_diamond.csv`: Diamond subset of GPQA
 
 
-Our Goal: To construct a robust evaluation dataset that moves beyond simple knowledge recall to assess deep and  pedagogical interaction, isolating and measuring genuine pedagogical skills.
+Our Goal: To construct a robust evaluation dataset that **moves beyond simple knowledge recall to assess deep and pedagogical interaction, isolating and measuring genuine pedagogical skills**.
 
 
 ## 📊 Evaluation Metrics
