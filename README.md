@@ -95,7 +95,7 @@ EducationQ supports multiple benchmark datasets and user-defined datasets:
 | **GPQA** | 198-546 | Science | Graduate-level science questions |
 | **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
 
-### MMLU-Pro Stratified + GPQA-Diamond
+### MMLU-Pro Stratified + GPQA Diamond
 
 And we construct **a high-quality and balanced teaching-oriented testbed** for LLMs' teaching capabilities evaluation.
 
