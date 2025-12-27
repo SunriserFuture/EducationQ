@@ -30,8 +30,6 @@ Our research reveals several important findings:
 
 ## 📖 Citation
 
-If you use this framework in your research, please cite our ACL 2025 paper:
-
 ```bibtex
 @inproceedings{shi-etal-2025-educationq,
     title = "{E}ducation{Q}: Evaluating {LLM}s' Teaching Capabilities Through Multi-Agent Dialogue Framework",
