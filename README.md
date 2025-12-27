@@ -92,7 +92,7 @@ EducationQ supports multiple benchmark datasets and user-defined datasets:
 | Dataset | Questions | Domains | Description |
 |---------|-----------|---------|-------------|
 | **MMLU-Pro** | 12,032 | 14 subjects | Enhanced MMLU with 10 options per question |
-| **GPQA** | 198-546 | Science | Graduate-level science questions |
+| **GPQA** | 448 | Science | Graduate-level science questions |
 | **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
 
 ### MMLU-Pro Stratified + GPQA Diamond
