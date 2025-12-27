@@ -83,10 +83,6 @@ The framework operates through three phases:
 
 ## 📁 Datasets
 
-<p align="center">
-  <img src="docs/figures/mmlu-pro-vs-mmlu-pro-stratifited.png" alt="MMLU-Pro vs MMLU-Pro Stratified" width="600"/>
-</p>
-
 EducationQ supports multiple benchmark datasets and user-defined datasets:
 
 | Dataset | Questions | Domains | Description |
@@ -96,6 +92,10 @@ EducationQ supports multiple benchmark datasets and user-defined datasets:
 | **AGIEval** | Varies | Multiple | Human-centric benchmark tasks |
 
 And we construct **MMLU-Pro Stratified + GPQA Diamond —— a high-quality and balanced teaching-oriented testbed** for LLMs' teaching capabilities evaluation.
+
+<p align="center">
+  <img src="docs/figures/mmlu-pro-vs-mmlu-pro-stratifited.png" alt="MMLU-Pro vs MMLU-Pro Stratified" width="600"/>
+</p>
 
 ### MMLU-Pro Stratified + GPQA Diamond
 
