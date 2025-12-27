@@ -128,7 +128,7 @@ EducationQ provides both **quantitative** and **qualitative** evaluation:
 | **ALG** (Absolute Learning Gain) | Direct improvement in student performance | ACC_post - ACC_pre |
 | **PNIR** (Positive-Negative Impact Ratio) | Consistency of teaching effectiveness | N_neg / N_pos |
 | **CSS** (Cross-Subject Stability) | Standard deviation of learning gains across subjects | σ(SLGPD) |
-| **UIC** (Unique Improvement Count) | Questions where only one specific teacher model achieved improvement | Count(OUI) |
+| **UIC** (Unique Improvement Count) | Questions where only one specific teacher model achieved improvement | Count(QUI) |
 
 ### Qualitative Analysis Dimensions
 
