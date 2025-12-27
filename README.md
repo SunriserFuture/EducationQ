@@ -103,7 +103,7 @@ And we construct **MMLU-Pro Stratified + GPQA Diamond —— a high-quality and 
   <img src="docs/figures/dataset-distribution.png" alt="Dataset Distribution" width="400"/>
 </p>
 
-1,498 Teaching Tasks covers 13 different disciplines and a wide range of difficulty levels: Meticulously curated from two elite benchmark data sources.
+1,498 Teaching Tasks covers **13 different disciplines** and **10 difficulty levels**: Meticulously curated from two elite benchmark data sources.
 
 Pre-filtered stratified subsets are available:
 - `mmlu_pro_stratified.json`: 1,300 stratified questions from MMLU-Pro
