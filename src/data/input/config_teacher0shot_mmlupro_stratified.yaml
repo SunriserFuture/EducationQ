@@ -8,10 +8,10 @@ SELECTED_CATEGORIES: []
 SELECTED_QUESTION_ID: [] ## Already filtered in mmlu_pro_stratified.json
 FIRST_QUESTIONS_SIZE: null
 QUESTIONS_SAMPLE_SIZE: null
-    GPQA_TEST_DATA_FOLDER_PATH: "../dataset/gpqa/dataset/"
-    GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
-    MMLU_PRO_TEST_DATA_FILEPATH: "../dataset/mmlu-pro/mmlu_pro_full_dataset.json"
-    AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
+GPQA_TEST_DATA_FOLDER_PATH: "../dataset/gpqa/dataset/"
+GPQA_VAL_DATA_FILEPATH: "../dataset/gpqa/prompts/chain_of_thought_examples.json"
+MMLU_PRO_TEST_DATA_FILEPATH: "../dataset/mmlu-pro/mmlu_pro_stratified.json"
+AGIEVAL_TEST_DATA_FOLDER_PATH: "../dataset/AGIEval/data/v1_1/"
 AGIEVAL_VAL_DATA_FILEPATH: "../dataset/AGIEval/data/few_shot_prompts.csv"
 AGIEVAL_DATASET_NAMES: ["aqua-rat"] #, "sat-math"
 LOGGING_LEVEL: "INFO"

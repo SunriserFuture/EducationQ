@@ -1,0 +1,69 @@
+{
+  "dataset_name": "EducationQ Dataset",
+  "version": "1.0.0",
+  "description": "A high-quality and balanced teaching-oriented testbed for evaluating LLMs' teaching capabilities through multi-agent educational scenarios.",
+  "citation": "@inproceedings{shi-etal-2025-educationq, title=\"{E}ducation{Q}: Evaluating {LLM}s' Teaching Capabilities Through Multi-Agent Dialogue Framework\", author=\"Shi, Yao and Liang, Rongkeng and Xu, Yong\", booktitle=\"Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)\", year=\"2025\", publisher=\"Association for Computational Linguistics\"}",
+  "homepage": "https://github.com/SunriserFuture/EducationQ",
+  "license": "MIT",
+  "splits": {
+    "full": {
+      "description": "Complete EducationQ Dataset (MMLU-Pro Stratified + GPQA Diamond)",
+      "num_examples": 1498,
+      "categories": {
+        "biology": 119,
+        "business": 100,
+        "chemistry": 193,
+        "computer science": 100,
+        "economics": 100,
+        "engineering": 100,
+        "health": 100,
+        "history": 100,
+        "law": 100,
+        "math": 100,
+        "philosophy": 100,
+        "physics": 186,
+        "psychology": 100
+      }
+    },
+    "mmlu_pro_stratified": {
+      "description": "MMLU-Pro Stratified subset - 13 disciplines with 100 questions each",
+      "num_examples": 1300,
+      "categories": {
+        "biology": 100,
+        "business": 100,
+        "chemistry": 100,
+        "computer science": 100,
+        "economics": 100,
+        "engineering": 100,
+        "health": 100,
+        "history": 100,
+        "law": 100,
+        "math": 100,
+        "philosophy": 100,
+        "physics": 100,
+        "psychology": 100
+      },
+      "source_dataset": "TIGER-Lab/MMLU-Pro"
+    },
+    "gpqa_diamond": {
+      "description": "GPQA Diamond subset - Graduate-level science questions",
+      "num_examples": 198,
+      "categories": {
+        "biology": 19,
+        "chemistry": 93,
+        "physics": 86
+      },
+      "source_dataset": "Idavidrein/gpqa"
+    }
+  },
+  "features": {
+    "id": "Unique identifier for each question",
+    "source": "Source dataset (mmlu-pro-stratified or gpqa-diamond)",
+    "question": "The question text",
+    "options": "List of answer options",
+    "answer": "Correct answer letter (A, B, C, ...)",
+    "answer_index": "Index of correct answer (0-based)",
+    "category": "Subject/discipline category",
+    "difficulty": "Difficulty level (undergraduate or graduate)"
+  }
+}
