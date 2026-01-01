@@ -64,6 +64,6 @@
     "answer": "Correct answer letter (A, B, C, ...)",
     "answer_index": "Index of correct answer (0-based)",
     "category": "Subject/discipline category",
-    "difficulty": "Difficulty level (undergraduate or graduate)"
+    "difficulty": "Difficulty level (+/- symbols for MMLU-Pro, empty for GPQA)"
   }
 }

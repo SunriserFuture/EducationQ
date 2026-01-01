@@ -38,7 +38,7 @@ def load_mmlu_pro_stratified() -> List[Dict[str, Any]]:
             "answer": item["answer"],
             "answer_index": item["answer_index"],
             "category": item["category"],
-            "difficulty": "undergraduate",  # MMLU-Pro is undergraduate level
+            "difficulty": item.get("difficulty", ""),  # Use the difficulty from the source file
             "original_source": item.get("src", ""),
         }
         formatted_data.append(formatted_item)
@@ -89,7 +89,7 @@ def load_gpqa_diamond() -> List[Dict[str, Any]]:
                 "answer": "A",  # Correct answer is always the first option
                 "answer_index": 0,
                 "category": category,
-                "difficulty": "graduate",  # GPQA is graduate level
+                "difficulty": "",  # GPQA Diamond does not have difficulty labels in EducationQ
                 "subdomain": subdomain,
                 "explanation": row.get("Explanation", "").strip(),
             }
@@ -143,7 +143,7 @@ def create_dataset_info(full_data: List, mmlu_data: List, gpqa_data: List) -> Di
             "answer": "Correct answer letter (A, B, C, ...)",
             "answer_index": "Index of correct answer (0-based)",
             "category": "Subject/discipline category",
-            "difficulty": "Difficulty level (undergraduate or graduate)",
+            "difficulty": "Difficulty level (+/- symbols for MMLU-Pro, empty for GPQA)",
         },
     }
 
