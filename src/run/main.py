@@ -2057,9 +2057,9 @@ Examples:
     parser.add_argument(
         "--mode",
         type=str,
-        choices=["complete", "load_pretest", "load_interaction", "evaluation"],
+        choices=["complete", "pretest", "load_pretest", "load_interaction", "evaluation"],
         default="complete",
-        help="Execution mode: complete pipeline, load pretest results, load interaction results, or run specific evaluation"
+        help="Execution mode: complete pipeline, run only pretest, load pretest results, load interaction results, or run specific evaluation"
     )
     
     parser.add_argument(
@@ -2129,6 +2129,12 @@ Examples:
             
             logging.info(f"Complete evaluation pipeline finished successfully for experiment {config.experiment_version}.")
             
+        elif args.mode == "pretest":
+            # ====== Run Only Pretest ======
+            logging.info("Running pretest only...")
+            pretest_results = manager._run_pretest()
+            logging.info("Pretest completed successfully.")
+
         elif args.mode == "load_pretest":
             # ====== Load Pretest Results and Continue ======
             if not args.input:
