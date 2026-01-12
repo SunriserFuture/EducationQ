@@ -1668,10 +1668,9 @@ class EvalManager:
             "interaction": interaction_history,
         }
     
-    def _run_interaction_from_json(self, pretest_results_path: str):
-        with open(pretest_results_path, "r") as f:
-            pretest_results = json.load(f)
-        return self._run_interactions(pretest_results)
+    def _load_results_from_json(self, results_path: str):
+        with open(results_path, "r") as f:
+            return json.load(f)
 
     def _run_posttest(self, interaction_results):
         posttest_results = defaultdict(lambda: defaultdict(dict))
@@ -2141,7 +2140,7 @@ Examples:
                 raise ValueError("--input argument is required for load_pretest mode")
             
             logging.info(f"Loading pretest results from: {args.input}")
-            pretest_results = manager._run_interaction_from_json(args.input)
+            pretest_results = manager._load_results_from_json(args.input)
             
             logging.info("Running teacher-student interactions...")
             pretest_interaction_results = manager._run_interactions(pretest_results)
@@ -2160,7 +2159,7 @@ Examples:
                 raise ValueError("--input argument is required for load_interaction mode")
             
             logging.info(f"Loading interaction results from: {args.input}")
-            pretest_interaction_results = manager._run_interaction_from_json(args.input)
+            pretest_interaction_results = manager._load_results_from_json(args.input)
             
             logging.info("Running posttest...")
             posttest_results = manager._run_posttest(pretest_interaction_results)
