@@ -8,7 +8,13 @@ import logging
 import yaml
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from educationq_benchmark_v3_2 import EvalManager, StudentLLM, TeacherLLM, EvaluatorLLM, EvalConfig, CONFIG
+import sys
+
+# The core benchmark module lives one directory up (src/run/main.py).
+# It was previously named "educationq_benchmark_v3_2.py" and was renamed to
+# "main.py" for the open-source release; the import below was updated to match.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
+from main import EvalManager, StudentLLM, TeacherLLM, EvaluatorLLM, EvalConfig, CONFIG
 
 def load_config(config_path: str) -> Dict[str, Any]:
     with open(config_path, 'r') as f:
