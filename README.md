@@ -163,6 +163,7 @@ EducationQ provides both **quantitative** and **qualitative** evaluation:
 - **Resume Capability**: Can continue from any stage using saved results
 - **Comprehensive Analysis**: Multiple evaluation perspectives (interaction, teacher questions, student responses)
 - **Local Dataset Support**: Load datasets from local JSON files without network dependency
+- **OpenRouter Provider Routing**: Optionally pin upstream providers (via the `provider` field in agent configs) for experiment reproducibility
 
 ## 🚀 Installation
 
@@ -182,15 +183,19 @@ pip install -r requirements.txt
 Run the complete evaluation pipeline:
 
 ```bash
-python src/run/main.py
+cd src/run
+python main.py
 ```
+
+> **Note**: Run all commands from the `src/run` directory — relative paths in the configuration files are resolved from there.
+
 
 ### 2. Custom Configuration
 
 Use a custom configuration file:
 
 ```bash
-python src/run/main.py --config ../data/input/my_config.yaml
+python main.py --config ../data/input/my_config.yaml
 ```
 
 ### 3. Resume from Previous Results
@@ -198,13 +203,13 @@ python src/run/main.py --config ../data/input/my_config.yaml
 Load existing pretest results and continue:
 
 ```bash
-python src/run/main.py --mode load_pretest --input pretest_results.json
+python main.py --mode load_pretest --input pretest_results.json
 ```
 
 Load existing interaction results and continue:
 
 ```bash
-python src/run/main.py --mode load_interaction --input interaction_results.json
+python main.py --mode load_interaction --input interaction_results.json
 ```
 
 ### 4. Run Specialized Evaluations
@@ -212,7 +217,7 @@ python src/run/main.py --mode load_interaction --input interaction_results.json
 Run comprehensive evaluation on existing results:
 
 ```bash
-python src/run/main.py --mode evaluation --posttest posttest.json --csv evaluation_tasks.csv --eval-type comprehensive
+python main.py --mode evaluation --posttest posttest.json --csv evaluation_tasks.csv --eval-type comprehensive
 ```
 
 ## ⚙️ Configuration
@@ -269,7 +274,7 @@ EVALUATOR_CONFIG:
 ## 🖥️ Command Line Options
 
 ```bash
-python src/run/main.py [OPTIONS]
+python main.py [OPTIONS]
 ```
 
 **Options**:

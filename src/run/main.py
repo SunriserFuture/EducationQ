@@ -161,6 +161,7 @@ class BaseLLM:
         max_tokens: int = 1024,
         use_few_shot: bool = False,
         num_if_few_shots: int = 5,
+        provider: Optional[Dict[str, Any]] = None,
     ):
         self.name = name
         self.model = model
@@ -170,6 +171,7 @@ class BaseLLM:
         self.max_tokens = max_tokens
         self.use_few_shot = use_few_shot
         self.num_if_few_shots = num_if_few_shots
+        self.provider = provider  # Optional OpenRouter provider routing, e.g. {"order": [...], "allow_fallbacks": false}
         self.client = OpenAI(base_url=self.base_url, api_key=self.api_key)
         self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.name}")
 
@@ -181,11 +183,13 @@ class BaseLLM:
 
     @retry_api_call(max_retries=CONFIG["API_CALL_MAX_RETRIES"], initial_delay=CONFIG["API_CALL_INITIAL_DELAY"], max_delay=CONFIG["API_CALL_MAX_DELAY"])
     def generate_response(self, messages: List[Dict[str, str]]) -> Optional[str]:
+        extra_body = {"provider": self.provider} if self.provider else {}
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
             temperature=self.temperature,
             max_tokens=self.max_tokens,
+            extra_body=extra_body,
         )
         return response.choices[0].message.content
 
@@ -207,6 +211,7 @@ class TeacherLLM(BaseLLM):
         is_vertex_ai: bool = False,
         project_id: str = None,
         location: str = None,
+        provider: Optional[Dict[str, Any]] = None,
     ):
         self.is_vertex_ai = is_vertex_ai
         self.project_id = project_id
@@ -218,7 +223,7 @@ class TeacherLLM(BaseLLM):
             base_url = self.client.base_url
             api_key = self.client.api_key
         
-        super().__init__(name, model, api_key, base_url, temperature, max_tokens, use_few_shot, num_if_few_shots)
+        super().__init__(name, model, api_key, base_url, temperature, max_tokens, use_few_shot, num_if_few_shots, provider=provider)
         
         self.recommended_question_token_limit = recommended_question_token_limit
         self.recommended_education_theory = recommended_education_theory
@@ -257,6 +262,7 @@ class TeacherLLM(BaseLLM):
             "is_vertex_ai": self.is_vertex_ai,
             "project_id": self.project_id,
             "location": self.location,
+            "provider": self.provider,
         }
 
     def generate_question(
@@ -346,9 +352,10 @@ class StudentLLM(BaseLLM):
         recommended_test_token_limit: int = 1024,
         max_tokens_rerun_threshold_percentage: float = 0.8,
         answer_retries: int = 3,
+        provider: Optional[Dict[str, Any]] = None,
     ):
         super().__init__(
-            name, model, api_key, base_url, temperature, answer_max_tokens, use_few_shot, num_if_few_shots
+            name, model, api_key, base_url, temperature, answer_max_tokens, use_few_shot, num_if_few_shots, provider=provider
         )
         self.test_max_tokens = test_max_tokens
         self.include_pretest_info = include_pretest_info
@@ -373,6 +380,7 @@ class StudentLLM(BaseLLM):
             "recommended_test_token_limit": self.recommended_test_token_limit,
             "max_tokens_rerun_threshold_percentage": self.max_tokens_rerun_threshold_percentage,
             "answer_retries": self.answer_retries,
+            "provider": self.provider,
         }
     
     def answer_question(
@@ -564,6 +572,7 @@ class StudentLLM(BaseLLM):
 
     @retry_api_call(max_retries=CONFIG["API_CALL_MAX_RETRIES"], initial_delay=CONFIG["API_CALL_INITIAL_DELAY"], max_delay=CONFIG["API_CALL_MAX_DELAY"])
     def test_call_api(self, messages):
+            extra_body = {"provider": self.provider} if self.provider else {}
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
@@ -573,6 +582,7 @@ class StudentLLM(BaseLLM):
                 frequency_penalty=0,
                 presence_penalty=0,
                 stop=None,
+                extra_body=extra_body,
             )
             return response.choices[0].message.content
 
@@ -617,8 +627,9 @@ class EvaluatorLLM(BaseLLM):
         max_tokens: int = 4096,
         use_few_shot: bool = False,
         num_if_few_shots: int = 5,
+        provider: Optional[Dict[str, Any]] = None,
     ):
-        super().__init__(name, model, api_key, base_url, temperature, max_tokens, use_few_shot, num_if_few_shots)
+        super().__init__(name, model, api_key, base_url, temperature, max_tokens, use_few_shot, num_if_few_shots, provider=provider)
         self.interaction_analysis_dimensions = [
             "Assessment Effectiveness",
             "Questioning Effectiveness",
@@ -1034,11 +1045,13 @@ Please provide your evaluation of both teachers:
         return evaluation
     
     def generate_response(self, messages: List[Dict[str, str]], schema: Dict[str, Any]) -> str:
+        extra_body = {"provider": self.provider} if self.provider else {}
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
             temperature=self.temperature,
             max_tokens=self.max_tokens,
+            extra_body=extra_body,
             response_format={
                 "type": "json_schema",
                 "json_schema": {

@@ -1,6 +1,6 @@
 DATASET_TYPE: "mmlu-pro" ## Option: "gpqa", "mmlu-pro"
 DATASET_NAME: "TIGER-Lab/MMLU-Pro" ## Option: "gpqa_diamond.csv", "gpqa_experts.csv", "gpqa_extended.csv", "gpqa_main.csv", "TIGER-Lab/MMLU-Pro", "mmlu_pro_stratified.json"
-OUTPUT_PATH: "../../output/template/" ## Need to be modified to save the records and results
+OUTPUT_PATH: "../data/output/template/" ## Need to be modified to save the records and results
 EXPERIMENT_VERSION: "1.0.0" ## Setup the experiment version number
 API_CALL_MAX_RETRIES: 10  ## Setup the Maximal retry times for each API query
 API_CALL_RETRY_DELAY: 5 ## Setup the initial retry delay second
@@ -31,6 +31,9 @@ TEACHER_CONFIGS:
     recommended_education_theory: null ## Setup the recommended education theory, recommend null
     max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
     question_retries: 3 ## Setup the question retries if the question is over the recommended max tokens, recommend 3
+    # provider:                 ## Optional (OpenRouter only): pin the upstream provider for reproducibility
+    #   order: ["DeepInfra"]    ## Priority list of upstream providers
+    #   allow_fallbacks: false  ## Set false to forbid falling back to other providers
 
   - name: "Teacher_gpt4o_mini" ## Setup the name of the teacher
     model: "openai/gpt-4o-mini" ## Setup the model name based on the model API provider
@@ -43,6 +46,9 @@ TEACHER_CONFIGS:
     recommended_education_theory: null ## Setup the recommended education theory, recommend null
     max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
     question_retries: 5 ## Setup the question retries if the question is over the recommended max tokens, recommend 5
+    # provider:                 ## Optional (OpenRouter only): pin the upstream provider for reproducibility
+    #   order: ["DeepInfra"]    ## Priority list of upstream providers
+    #   allow_fallbacks: false  ## Set false to forbid falling back to other providers
 
 STUDENT_CONFIGS:
   - name: "Student1" ## Setup the name of the student
@@ -58,6 +64,9 @@ STUDENT_CONFIGS:
     recommended_test_token_limit: 1024 ## Setup the recommended test token limit, recommend 1024
     max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
     answer_retries: 3 ## Setup the answer retries if the answer is over the recommended max tokens, recommend 3
+    # provider:                 ## Optional (OpenRouter only): pin the upstream provider for reproducibility
+    #   order: ["DeepInfra"]    ## Priority list of upstream providers
+    #   allow_fallbacks: false  ## Set false to forbid falling back to other providers
 
   - name: "Student2" ## Setup the name of the student
     model: "meta-llama/llama-3.1-70b-instruct" ## Setup the model name based on the model API provider
@@ -72,6 +81,9 @@ STUDENT_CONFIGS:
     recommended_test_token_limit: 1024 ## Setup the recommended test token limit, recommend 1024
     max_tokens_rerun_threshold_percentage: 0.8 ## Setup the max tokens rerun threshold percentage, recommend 0.8
     answer_retries: 3 ## Setup the answer retries if the answer is over the recommended max tokens, recommend 3
+    # provider:                 ## Optional (OpenRouter only): pin the upstream provider for reproducibility
+    #   order: ["DeepInfra"]    ## Priority list of upstream providers
+    #   allow_fallbacks: false  ## Set false to forbid falling back to other providers
 
 EVALUATOR_CONFIG:
   name: "Evaluator" ## Setup the name of the evaluator
@@ -81,3 +93,6 @@ EVALUATOR_CONFIG:
   temperature: 0.0 ## Setup the temperature, recommend 0.0
   max_tokens: 4096 ## Setup the max tokens, recommend 4096
   use_few_shot: false ## Setup the use of few shot examples, recommend false
+  # provider:                 ## Optional (OpenRouter only): pin the upstream provider for reproducibility
+  #   order: ["DeepInfra"]    ## Priority list of upstream providers
+  #   allow_fallbacks: false  ## Set false to forbid falling back to other providers
