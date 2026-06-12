@@ -247,8 +247,9 @@ STUDENT_CONFIGS:
     answer_retries: 5
 
 EVALUATOR_CONFIG:
-  name: "Evaluator-gpt4o-mini"
-  model: "openai/gpt-4o-mini"
+  name: "Evaluator-gpt-4o-0806"
+  # model: "openai/gpt-4o-2024-08-06"
+  model: "gpt-4o-2024-08-06"
   api_key: "your_api_key"
   base_url: "your_api_url"
   temperature: 0.0

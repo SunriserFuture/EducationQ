@@ -264,7 +264,7 @@ STUDENT_CONFIGS:
 ```yaml
 EVALUATOR_CONFIG:
   name: "Evaluator"
-  model: "openai/gpt-4o-mini"
+  model: "openai/gpt-4o"
   api_key: "your_openai_api_key"
   base_url: "your_api_url"
   temperature: 0.0

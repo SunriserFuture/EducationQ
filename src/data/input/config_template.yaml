@@ -87,7 +87,7 @@ STUDENT_CONFIGS:
 
 EVALUATOR_CONFIG:
   name: "Evaluator" ## Setup the name of the evaluator
-  model: "openai/gpt-4o-mini" ## Setup the model name based on the model API provider
+  model: "openai/gpt-4o" ## Setup the model name based on the model API provider; the main experiments use gpt-4o as the judge
   api_key: "your_openai_api_key" ## Setup the API key
   base_url: "your_api_url" ## Setup the API base url
   temperature: 0.0 ## Setup the temperature, recommend 0.0
